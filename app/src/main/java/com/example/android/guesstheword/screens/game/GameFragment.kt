@@ -38,8 +38,6 @@ class GameFragment : Fragment() {
 
 
     private lateinit var binding: GameFragmentBinding
-
-
     private lateinit var viewModel: GameViewModel
 
 
@@ -57,40 +55,16 @@ class GameFragment : Fragment() {
         Log.i("GameFragment", "Called ViewModelProviders.of")
         viewModel = ViewModelProviders.of(this).get(GameViewModel::class.java)
 
-        binding.correctButton.setOnClickListener { onCorrect() }
-        binding.skipButton.setOnClickListener { onSkip() }
+        binding.gameViewModel = viewModel
+        binding.lifecycleOwner = this
+
+
         return binding.root
-
-        binding.endGameButton.setOnClickListener { onEndGame() }
-
-        /** Setting up LiveData observation relationship **/
-        viewModel.word.observe(this, Observer { newWord ->
-            binding.wordText.text = newWord
-        })
 
         // Observer for the Game finished event
         viewModel.eventGameFinish.observe(this, Observer<Boolean> { hasFinished ->
             if (hasFinished) gameFinished()
         })
-    }
-
-
-    /** Methods for button click handlers **/
-
-    private fun onSkip() {
-        viewModel.onSkip()
-    }
-    private fun onCorrect() {
-        viewModel.onCorrect()
-    }
-
-
-    /** Methods for updating the UI **/
-
-
-
-    private fun onEndGame() {
-        gameFinished()
     }
 
     /**
